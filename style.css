@@ -146,6 +146,123 @@ body {
     grid-column: span 2;
 }
 
+/* ========== ESTILOS DEL HISTORIAL ========== */
+
+.history-section {
+    margin: 20px 0;
+    border-radius: 15px;
+    background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
+    border: 1px solid rgba(139, 69, 255, 0.3);
+    overflow: hidden;
+}
+
+.history-header {
+    display: flex;
+    gap: 10px;
+    padding: 15px;
+    background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
+    border-bottom: 1px solid rgba(139, 69, 255, 0.2);
+}
+
+.history-toggle, .clear-history {
+    flex: 1;
+    height: 45px;
+    font-size: 1rem;
+    border-radius: 10px;
+    border: 1px solid rgba(139, 69, 255, 0.3);
+    background: linear-gradient(145deg, #8b45ff, #6d28d9);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.history-toggle:hover {
+    background: linear-gradient(145deg, #a855f7, #8b45ff);
+    box-shadow: 0 4px 15px rgba(139, 69, 255, 0.4);
+    transform: translateY(-2px);
+}
+
+.clear-history {
+    background: linear-gradient(145deg, #dc2626, #b91c1c);
+    border: 1px solid rgba(220, 38, 38, 0.3);
+}
+
+.clear-history:hover {
+    background: linear-gradient(145deg, #ef4444, #dc2626);
+    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+    transform: translateY(-2px);
+}
+
+.history-content {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.history-item {
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+    border: 1px solid rgba(139, 69, 255, 0.2);
+    border-radius: 10px;
+    padding: 12px;
+    transition: all 0.3s ease;
+}
+
+.history-item:hover {
+    background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
+    border-color: rgba(139, 69, 255, 0.4);
+    transform: translateX(5px);
+}
+
+.history-operation {
+    color: #8b45ff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+    font-family: 'Courier New', monospace;
+}
+
+.history-timestamp {
+    color: #888;
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+.history-empty {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    padding: 20px;
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+    border-radius: 10px;
+    border: 1px solid rgba(139, 69, 255, 0.1);
+}
+
+/* Scrollbar personalizado para el historial */
+.history-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.history-content::-webkit-scrollbar-track {
+    background: #1a1a1a;
+    border-radius: 4px;
+}
+
+.history-content::-webkit-scrollbar-thumb {
+    background: linear-gradient(145deg, #8b45ff, #6d28d9);
+    border-radius: 4px;
+}
+
+.history-content::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(145deg, #a855f7, #8b45ff);
+}
+
 
 @keyframes fadeIn {
     from {
@@ -187,6 +304,29 @@ body {
     
     .buttons {
         gap: 10px;
+    }
+    
+    /* Responsive para historial */
+    .history-header {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .history-toggle, .clear-history {
+        height: 40px;
+        font-size: 0.9rem;
+    }
+    
+    .history-content {
+        max-height: 250px;
+    }
+    
+    .history-operation {
+        font-size: 1rem;
+    }
+    
+    .history-timestamp {
+        font-size: 0.8rem;
     }
 }
 

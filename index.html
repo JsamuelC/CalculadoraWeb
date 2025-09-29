@@ -12,21 +12,35 @@
         <div class="display">
             <input type="text" id="result" readonly>
         </div>
+        
+        
+        <div class="history-section">
+            <div class="history-header">
+                <button class="btn history-toggle" onclick="toggleHistory()">📋 Historial</button>
+                <button class="btn clear-history" onclick="clearHistory()">🗑️ Limpiar</button>
+            </div>
+            <div class="history-content" id="historyContent" style="display: none;">
+                <div class="history-list" id="historyList">
+                  
+                </div>
+            </div>
+        </div>
+        
         <div class="buttons">
             <button class="btn clear" onclick="clearDisplay()">C</button>
             <button class="btn operator" onclick="deleteLast()">⌫</button>
-            <button class="btn operator" onclick="appendToDisplay('/')">/</button>
-            <button class="btn operator" onclick="appendToDisplay('*')">×</button>
+            <button class="btn operator" onclick="setOperator('/')">/</button>
+            <button class="btn operator" onclick="setOperator('*')">×</button>
             
             <button class="btn number" onclick="appendToDisplay('7')">7</button>
             <button class="btn number" onclick="appendToDisplay('8')">8</button>
             <button class="btn number" onclick="appendToDisplay('9')">9</button>
-            <button class="btn operator" onclick="appendToDisplay('-')">-</button>
+            <button class="btn operator" onclick="setOperator('-')">-</button>
             
             <button class="btn number" onclick="appendToDisplay('4')">4</button>
             <button class="btn number" onclick="appendToDisplay('5')">5</button>
             <button class="btn number" onclick="appendToDisplay('6')">6</button>
-            <button class="btn operator" onclick="appendToDisplay('+')">+</button>
+            <button class="btn operator" onclick="setOperator('+')">+</button>
             
             <button class="btn number" onclick="appendToDisplay('1')">1</button>
             <button class="btn number" onclick="appendToDisplay('2')">2</button>
@@ -64,6 +78,15 @@
             display.value = currentInput;
         }
         
+        function setOperator(op) {
+            if (currentInput && operator && previousInput) {
+                calculate();
+            }
+            operator = op;
+            previousInput = currentInput;
+            currentInput = '';
+        }
+        
         function calculate() {
             if (operator && previousInput && currentInput) {
                 let result;
@@ -89,6 +112,9 @@
                         break;
                 }
                 
+                // Guardar la operación en el historial
+                saveToHistory(previousInput, operator, currentInput, result);
+                
                 display.value = result;
                 currentInput = result.toString();
                 previousInput = '';
@@ -97,16 +123,8 @@
         }
         
         
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('operator') && e.target.textContent !== '=') {
-                if (currentInput && operator && previousInput) {
-                    calculate();
-                }
-                operator = e.target.textContent;
-                previousInput = currentInput;
-                currentInput = '';
-            }
-        });
+        // Event listener para operadores ya no es necesario 
+        // ya que ahora usamos setOperator() directamente en los botones
         
         
         document.addEventListener('keydown', function(e) {
@@ -128,6 +146,93 @@
             } else if (key === 'Backspace') {
                 deleteLast();
             }
+        });
+        
+        // ========== FUNCIONES DEL HISTORIAL ==========
+        
+        // Función para guardar una operación en el historial
+        function saveToHistory(operand1, operator, operand2, result) {
+            const historyItem = {
+                id: Date.now(),
+                operand1: operand1,
+                operator: operator,
+                operand2: operand2,
+                result: result,
+                timestamp: new Date().toLocaleString('es-ES')
+            };
+            
+            // Obtener historial existente
+            let history = getHistory();
+            
+            // Agregar nueva operación al inicio
+            history.unshift(historyItem);
+            
+            // Limitar a 50 operaciones máximo
+            if (history.length > 50) {
+                history = history.slice(0, 50);
+            }
+            
+            // Guardar en localStorage
+            localStorage.setItem('calculatorHistory', JSON.stringify(history));
+            
+            // Actualizar la vista del historial si está visible
+            if (document.getElementById('historyContent').style.display !== 'none') {
+                displayHistory();
+            }
+        }
+        
+        // Función para obtener el historial desde localStorage
+        function getHistory() {
+            const history = localStorage.getItem('calculatorHistory');
+            return history ? JSON.parse(history) : [];
+        }
+        
+        // Función para mostrar/ocultar el historial
+        function toggleHistory() {
+            const historyContent = document.getElementById('historyContent');
+            const toggleBtn = document.querySelector('.history-toggle');
+            
+            if (historyContent.style.display === 'none') {
+                historyContent.style.display = 'block';
+                toggleBtn.textContent = '📋 Ocultar Historial';
+                displayHistory();
+            } else {
+                historyContent.style.display = 'none';
+                toggleBtn.textContent = '📋 Historial';
+            }
+        }
+        
+        // Función para mostrar el historial en la interfaz
+        function displayHistory() {
+            const historyList = document.getElementById('historyList');
+            const history = getHistory();
+            
+            if (history.length === 0) {
+                historyList.innerHTML = '<div class="history-empty">No hay operaciones en el historial</div>';
+                return;
+            }
+            
+            historyList.innerHTML = history.map(item => `
+                <div class="history-item">
+                    <div class="history-operation">
+                        ${item.operand1} ${item.operator} ${item.operand2} = ${item.result}
+                    </div>
+                    <div class="history-timestamp">${item.timestamp}</div>
+                </div>
+            `).join('');
+        }
+        
+        // Función para limpiar el historial
+        function clearHistory() {
+            if (confirm('¿Estás seguro de que quieres eliminar todo el historial?')) {
+                localStorage.removeItem('calculatorHistory');
+                displayHistory();
+            }
+        }
+        
+        // Cargar historial al inicializar la página
+        window.addEventListener('load', function() {
+            displayHistory();
         });
     </script>
 </body>
